@@ -14,6 +14,12 @@ import {
   ArrowRight,
   Menu,
   X,
+  Search,
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  ArrowUpRight,
+  CheckCircle2,
 } from "lucide-react";
 
 import JpgToPdf from "./components/JpgToPdf";
@@ -28,6 +34,7 @@ import CompressImage from "./components/CompressImage";
 import ImageConverter from "./components/ImageConverter";
 import PdfToJpg from "./components/PdfToJpg";
 import PdfToPng from "./components/PdfToPng";
+import ExcelToPdf from "./components/ExcelToPdf";
 
 import "./App.css";
 
@@ -144,20 +151,21 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const categories = ["All", "PDF", "Image", "Office"];
+  const availableTools = tools.filter((tool) => tool.title !== "PowerPoint to PDF");
 
   // ==========================================
   // FILTER TOOLS
   // ==========================================
 
-  const filteredTools = tools.filter((tool) => {
+  const filteredTools = availableTools.filter((tool) => {
 
     const matchesCategory =
       activeCategory === "All" ||
       tool.category === activeCategory;
 
-    const matchesSearch = tool.title
+    const matchesSearch = `${tool.title} ${tool.description}`
       .toLowerCase()
-      .includes(search.toLowerCase());
+      .includes(search.trim().toLowerCase());
 
     return matchesCategory && matchesSearch;
 
@@ -180,7 +188,8 @@ function App() {
     toolTitle === "Compress Image" ||
     toolTitle === "Image Converter" ||
     toolTitle === "PDF to JPG" ||
-    toolTitle === "PDF to PNG"
+    toolTitle === "PDF to PNG" ||
+    toolTitle === "Excel to PDF"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -234,62 +243,19 @@ function App() {
 
           </div>
 
-          {/* NAVIGATION */}
-
-          <nav className={menuOpen ? "nav nav-open" : "nav"}>
-
-            <a
-              href="#home"
-              onClick={() => {
-                handleBackToHome();
-                setMenuOpen(false);
-              }}
-            >
-              Home
-            </a>
-
-            <a
-              href="#tools"
-              onClick={() => {
-                handleBackToHome();
-                setMenuOpen(false);
-              }}
-            >
-              All Tools
-            </a>
-
-            <a
-              href="#pricing"
-              onClick={() => {
-                handleBackToHome();
-                setMenuOpen(false);
-              }}
-            >
-              Pricing
-            </a>
-
+          <nav className={menuOpen ? "nav nav-open" : "nav"} aria-label="Main navigation">
+            <a href="#home" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>Home</a>
+            <a href="#tools" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>All Tools</a>
+            <a href="#how-it-works" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>How it works</a>
           </nav>
 
-          {/* HEADER BUTTONS */}
-
           <div className="header-actions">
-
-            <button
-              className="login-btn"
-              type="button"
-              onClick={() => alert("Login coming soon!")}
-            >
-              Login
+            <button className="signup-btn" type="button" onClick={() => {
+              handleBackToHome();
+              setTimeout(() => document.getElementById("tools")?.scrollIntoView({ behavior: "smooth" }), 0);
+            }}>
+              Explore tools <ArrowUpRight size={17} />
             </button>
-
-            <button
-              className="signup-btn"
-              type="button"
-              onClick={() => alert("Registration coming soon!")}
-            >
-              Get Started
-            </button>
-
           </div>
 
           {/* MOBILE MENU */}
@@ -298,7 +264,8 @@ function App() {
             className="menu-btn"
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle navigation"
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={menuOpen}
           >
 
             {menuOpen ? <X /> : <Menu />}
@@ -337,6 +304,8 @@ function App() {
   <PdfToJpg onBack={handleBackToHome} />
 ) : selectedTool === "PDF to PNG" ? (
   <PdfToPng onBack={handleBackToHome} />
+) : selectedTool === "Excel to PDF" ? (
+  <ExcelToPdf onBack={handleBackToHome} />
 ) : (
 
         // =====================================
@@ -350,57 +319,36 @@ function App() {
           ===================================== */}
 
           <section className="hero" id="home">
-
-            <div className="hero-badge">
-              Your All-in-One File Solution
+            <div className="hero-inner">
+              <div className="hero-copy">
+                <div className="hero-badge"><Sparkles size={15} /> YOUR EVERYDAY FILE WORKSPACE</div>
+                <h1>Better files.<br /><span>Less effort.</span></h1>
+                <p>Everything you need to convert, compress and organize your PDFs, images and documents — in one simple workspace.</p>
+                <div className="hero-actions">
+                  <a href="#tools" className="hero-button">Explore all tools <ArrowRight size={19} /></a>
+                  <a href="#how-it-works" className="hero-secondary">How it works <ArrowUpRight size={17} /></a>
+                </div>
+                <div className="hero-features">
+                  <span><CheckCircle2 size={16} /> Easy to use</span>
+                  <span><CheckCircle2 size={16} /> No installation</span>
+                  <span><CheckCircle2 size={16} /> Works in your browser</span>
+                </div>
+              </div>
+              <div className="hero-visual" aria-hidden="true">
+                <div className="visual-orbit visual-orbit-one" />
+                <div className="visual-orbit visual-orbit-two" />
+                <div className="visual-file visual-file-back"><FileImage size={32} /><span>image.png</span></div>
+                <div className="visual-file visual-file-front"><FileText size={42} /><strong>Your files,<br />simplified.</strong><span>Convert · Compress · Organize</span></div>
+                <div className="visual-floating"><CheckCircle2 size={20} /> Ready to download</div>
+                <div className="visual-spark visual-spark-one">✦</div><div className="visual-spark visual-spark-two">✧</div>
+              </div>
             </div>
+          </section>
 
-            <h1>
-
-              Every File Tool You Need.
-
-              <br />
-
-              <span>
-                All in One Place.
-              </span>
-
-            </h1>
-
-            <p>
-
-              Convert, compress, merge, split and manage your
-              documents effortlessly. Fast, secure and simple.
-
-            </p>
-
-            <a
-              href="#tools"
-              className="hero-button"
-            >
-
-              Explore All Tools
-
-              <ArrowRight size={19} />
-
-            </a>
-
-            <div className="hero-features">
-
-              <span>
-                ✓ Easy to Use
-              </span>
-
-              <span>
-                ✓ Fast Processing
-              </span>
-
-              <span>
-                ✓ No Installation Required
-              </span>
-
-            </div>
-
+          <section className="quick-benefits" aria-label="FileToolkit benefits">
+            <div><Zap size={20} /><span><strong>Quick workflows</strong><small>Get from upload to download faster</small></span></div>
+            <div><ShieldCheck size={20} /><span><strong>Simple controls</strong><small>Choose the settings that work for you</small></span></div>
+            <div><Files size={20} /><span><strong>One convenient place</strong><small>PDF, image and office tools together</small></span></div>
           </section>
 
           {/* =====================================
@@ -414,13 +362,9 @@ function App() {
 
             <div className="section-heading">
 
-              <h2>
-                All the tools you need
-              </h2>
-
-              <p>
-                Powerful tools to make working with files easier.
-              </p>
+              <div className="section-eyebrow">EXPLORE THE TOOLKIT</div>
+              <h2>What would you like to do?</h2>
+              <p>Find the right tool for your next file task.</p>
 
             </div>
 
@@ -455,13 +399,12 @@ function App() {
 
               {/* SEARCH */}
 
-              <input
-                type="text"
-                placeholder="Search tools..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="search-input"
-              />
+              <label className="search-wrap">
+                <Search size={19} aria-hidden="true" />
+                <span className="sr-only">Search tools</span>
+                <input type="search" placeholder="Search tools..." value={search}
+                  onChange={(e) => setSearch(e.target.value)} className="search-input" />
+              </label>
 
             </div>
 
@@ -484,11 +427,10 @@ function App() {
 
                     {/* TOOL ICON */}
 
-                    <div className="tool-icon">
-
+                    <div className={`tool-icon tool-icon-${tool.category.toLowerCase()}`}>
                       <Icon size={27} />
-
                     </div>
+                    <span className="tool-category">{tool.category === "Office" ? "DOCUMENT" : tool.category.toUpperCase()}</span>
 
                     {/* TOOL TITLE */}
 
@@ -510,7 +452,7 @@ function App() {
                       onClick={() => handleOpenTool(tool.title)}
                     >
 
-                      Use Tool
+                      Open tool
 
                       <ArrowRight size={16} />
 
@@ -542,30 +484,23 @@ function App() {
               BOTTOM CTA SECTION
           ===================================== */}
 
-          <section
-            className="bottom-cta"
-            id="pricing"
-          >
+          <section className="how-section" id="how-it-works">
+            <div className="section-eyebrow">HOW IT WORKS</div>
+            <h2>Three steps. Done.</h2>
+            <p>Choose your tool, adjust the options and get your result.</p>
+            <div className="steps-grid">
+              <div><span className="step-number">01</span><h3>Pick a tool</h3><p>Browse by category or search for the task you need.</p></div>
+              <div><span className="step-number">02</span><h3>Add your files</h3><p>Upload your documents and choose your preferred settings.</p></div>
+              <div><span className="step-number">03</span><h3>Download</h3><p>Save the result and get back to what matters.</p></div>
+            </div>
+          </section>
 
-            <h2>
-              Make file management effortless
-            </h2>
-
-            <p>
-
-              Everything you need to work with documents
-              in one convenient place.
-
-            </p>
-
-            <a href="#tools">
-
-              Start Using Our Tools
-
-              <ArrowRight size={18} />
-
-            </a>
-
+          <section className="bottom-cta">
+            <div className="cta-glow" aria-hidden="true" />
+            <div className="section-eyebrow">READY WHEN YOU ARE</div>
+            <h2>Your next file task starts here.</h2>
+            <p>Useful tools, a simpler workflow, and no software to install.</p>
+            <a href="#tools">Browse all tools <ArrowRight size={18} /></a>
           </section>
 
         </>
