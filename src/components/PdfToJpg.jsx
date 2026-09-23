@@ -589,13 +589,14 @@ export default function PdfToJpg({ onBack }) {
               <h3>Selected PDF</h3>
 
               <button
+                className="remove-image"
                 type="button"
                 onClick={removeFile}
-                disabled={isConverting}
-              >
-                <Trash2 size={17} />
+                disabled={isLoading || isConverting}
+                >
+                <Trash2 size={16} />
                 Remove PDF
-              </button>
+                </button>
             </div>
 
             <div className="pdf-settings">
