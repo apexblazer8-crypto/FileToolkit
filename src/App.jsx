@@ -22,6 +22,8 @@ import SplitPdf from "./components/SplitPdf";
 import CompressPdf from "./components/CompressPdf";
 import PdfToWord from "./components/PdfToWord";
 import WordToPdf from "./components/WordToPdf";
+import LockPdf from "./components/LockPdf";
+import UnlockPdf from "./components/UnlockPdf";
 
 import "./App.css";
 
@@ -153,7 +155,9 @@ function App() {
     toolTitle === "Split PDF" ||
     toolTitle === "Compress PDF" ||
     toolTitle === "Word to PDF" ||
-    toolTitle === "PDF to Word"
+    toolTitle === "PDF to Word" ||
+    toolTitle === "Lock PDF" ||
+    toolTitle === "Unlock PDF"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -298,6 +302,10 @@ function App() {
   <PdfToWord onBack={handleBackToHome} />
 ) : selectedTool === "Word to PDF" ? (
   <WordToPdf onBack={handleBackToHome} />
+) : selectedTool === "Lock PDF" ? (
+  <LockPdf onBack={handleBackToHome} />
+) : selectedTool === "Unlock PDF" ? (
+  <UnlockPdf onBack={handleBackToHome} />
 ) : (
 
         // =====================================
