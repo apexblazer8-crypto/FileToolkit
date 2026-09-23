@@ -27,6 +27,7 @@ import UnlockPdf from "./components/UnlockPdf";
 import CompressImage from "./components/CompressImage";
 import ImageConverter from "./components/ImageConverter";
 import PdfToJpg from "./components/PdfToJpg";
+import PdfToPng from "./components/PdfToPng";
 
 import "./App.css";
 
@@ -75,6 +76,13 @@ const tools = [
   {
     title: "PDF to JPG",
     description: "Convert PDF pages into high-quality JPG images.",
+    icon: FileImage,
+    category: "PDF",
+  },
+
+  {
+    title: "PDF to PNG",
+    description: "Convert PDF pages into lossless PNG images.",
     icon: FileImage,
     category: "PDF",
   },
@@ -171,7 +179,8 @@ function App() {
     toolTitle === "Unlock PDF" ||
     toolTitle === "Compress Image" ||
     toolTitle === "Image Converter" ||
-    toolTitle === "PDF to JPG"
+    toolTitle === "PDF to JPG" ||
+    toolTitle === "PDF to PNG"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -326,6 +335,8 @@ function App() {
   <ImageConverter onBack={handleBackToHome} />
 ) : selectedTool === "PDF to JPG" ? (
   <PdfToJpg onBack={handleBackToHome} />
+) : selectedTool === "PDF to PNG" ? (
+  <PdfToPng onBack={handleBackToHome} />
 ) : (
 
         // =====================================
