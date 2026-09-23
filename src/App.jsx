@@ -25,6 +25,7 @@ import WordToPdf from "./components/WordToPdf";
 import LockPdf from "./components/LockPdf";
 import UnlockPdf from "./components/UnlockPdf";
 import CompressImage from "./components/CompressImage";
+import ImageConverter from "./components/ImageConverter";
 
 import "./App.css";
 
@@ -159,7 +160,8 @@ function App() {
     toolTitle === "PDF to Word" ||
     toolTitle === "Lock PDF" ||
     toolTitle === "Unlock PDF" ||
-    toolTitle === "Compress Image"
+    toolTitle === "Compress Image" ||
+    toolTitle === "JPG to PNG"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -310,6 +312,8 @@ function App() {
   <UnlockPdf onBack={handleBackToHome} />
 ) : selectedTool === "Compress Image" ? (
   <CompressImage onBack={handleBackToHome} />
+) : selectedTool === "JPG to PNG" ? (
+  <ImageConverter onBack={handleBackToHome} />
 ) : (
 
         // =====================================
