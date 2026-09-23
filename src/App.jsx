@@ -89,8 +89,8 @@ const tools = [
     category: "Image",
   },
   {
-    title: "JPG to PNG",
-    description: "Convert JPG images into PNG format.",
+    title: "Image Converter",
+    description: "Convert images between JPG, PNG, and WebP formats.",
     icon: FileImage,
     category: "Image",
   },
@@ -161,7 +161,7 @@ function App() {
     toolTitle === "Lock PDF" ||
     toolTitle === "Unlock PDF" ||
     toolTitle === "Compress Image" ||
-    toolTitle === "JPG to PNG"
+    toolTitle === "Image Converter"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -312,7 +312,7 @@ function App() {
   <UnlockPdf onBack={handleBackToHome} />
 ) : selectedTool === "Compress Image" ? (
   <CompressImage onBack={handleBackToHome} />
-) : selectedTool === "JPG to PNG" ? (
+) : selectedTool === "Image Converter" ? (
   <ImageConverter onBack={handleBackToHome} />
 ) : (
 
