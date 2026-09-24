@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   FileText,
@@ -35,6 +35,8 @@ import ImageConverter from "./components/ImageConverter";
 import PdfToJpg from "./components/PdfToJpg";
 import PdfToPng from "./components/PdfToPng";
 import ExcelToPdf from "./components/ExcelToPdf";
+import PowerPointToPdf from "./components/PowerPointToPdf";
+import PowerPointToImages from "./components/PowerPointToImages";
 
 import "./App.css";
 
@@ -130,6 +132,12 @@ const tools = [
     icon: Presentation,
     category: "Office",
   },
+  {
+    title: "PowerPoint to Images",
+    description: "Export slides as PNG or JPG images.",
+    icon: FileImage,
+    category: "Office",
+  },
 ];
 
 // ==========================================
@@ -149,9 +157,29 @@ function App() {
 
   // Mobile navigation
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [scrollTarget, setScrollTarget] = useState(null);
+
+  useEffect(() => {
+    if (!selectedTool && scrollTarget) {
+      document.getElementById(scrollTarget)?.scrollIntoView({ behavior: "smooth" });
+      setScrollTarget(null);
+    }
+  }, [selectedTool, scrollTarget]);
+
+  const navigateTo = (target) => {
+    setShowPrivacy(false);
+    setMenuOpen(false);
+    if (selectedTool) {
+      setScrollTarget(target);
+      setSelectedTool(null);
+    } else {
+      document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const categories = ["All", "PDF", "Image", "Office"];
-  const availableTools = tools.filter((tool) => tool.title !== "PowerPoint to PDF");
+  const availableTools = tools;
 
   // ==========================================
   // FILTER TOOLS
@@ -163,9 +191,15 @@ function App() {
       activeCategory === "All" ||
       tool.category === activeCategory;
 
-    const matchesSearch = `${tool.title} ${tool.description}`
+    // Match words (or the beginning of words), not text inside other words.
+    // For example, "word" should not match "password".
+    const searchTerms = search.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+    const toolWords = `${tool.title} ${tool.description}`
       .toLowerCase()
-      .includes(search.trim().toLowerCase());
+      .match(/[a-z0-9]+/g) ?? [];
+    const matchesSearch = searchTerms.every((term) =>
+      toolWords.some((word) => word.startsWith(term))
+    );
 
     return matchesCategory && matchesSearch;
 
@@ -189,7 +223,9 @@ function App() {
     toolTitle === "Image Converter" ||
     toolTitle === "PDF to JPG" ||
     toolTitle === "PDF to PNG" ||
-    toolTitle === "Excel to PDF"
+    toolTitle === "Excel to PDF" ||
+    toolTitle === "PowerPoint to PDF" ||
+    toolTitle === "PowerPoint to Images"
   ) {
     setSelectedTool(toolTitle);
     window.scrollTo(0, 0);
@@ -244,15 +280,14 @@ function App() {
           </div>
 
           <nav className={menuOpen ? "nav nav-open" : "nav"} aria-label="Main navigation">
-            <a href="#home" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>Home</a>
-            <a href="#tools" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>All Tools</a>
-            <a href="#how-it-works" onClick={() => { handleBackToHome(); setMenuOpen(false); }}>How it works</a>
+            <a href="#home" onClick={(event) => { event.preventDefault(); navigateTo("home"); }}>Home</a>
+            <a href="#tools" onClick={(event) => { event.preventDefault(); navigateTo("tools"); }}>All Tools</a>
+            <a href="#how-it-works" onClick={(event) => { event.preventDefault(); navigateTo("how-it-works"); }}>How it works</a>
           </nav>
 
           <div className="header-actions">
             <button className="signup-btn" type="button" onClick={() => {
-              handleBackToHome();
-              setTimeout(() => document.getElementById("tools")?.scrollIntoView({ behavior: "smooth" }), 0);
+              navigateTo("tools");
             }}>
               Explore tools <ArrowUpRight size={17} />
             </button>
@@ -306,6 +341,10 @@ function App() {
   <PdfToPng onBack={handleBackToHome} />
 ) : selectedTool === "Excel to PDF" ? (
   <ExcelToPdf onBack={handleBackToHome} />
+) : selectedTool === "PowerPoint to PDF" ? (
+  <PowerPointToPdf onBack={handleBackToHome} />
+) : selectedTool === "PowerPoint to Images" ? (
+  <PowerPointToImages onBack={handleBackToHome} />
 ) : (
 
         // =====================================
@@ -523,16 +562,29 @@ function App() {
 
           </div>
 
-          <p>
-
-            © {new Date().getFullYear()} FileToolkit.
-            All rights reserved.
-
-          </p>
+          <div className="footer-right">
+            <button type="button" className="footer-privacy" onClick={() => setShowPrivacy(true)}>Privacy &amp; file handling</button>
+            <p>© {new Date().getFullYear()} FileToolkit. All rights reserved.</p>
+          </div>
 
         </div>
 
       </footer>
+
+      {showPrivacy && (
+        <div className="privacy-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowPrivacy(false); }}>
+          <section className="privacy-dialog" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+            <button type="button" className="privacy-close" aria-label="Close privacy information" onClick={() => setShowPrivacy(false)}><X size={21} /></button>
+            <div className="section-eyebrow">YOUR FILES MATTER</div>
+            <h2 id="privacy-title">Privacy &amp; file handling</h2>
+            <p>Most FileToolkit tools process files in your browser. When a PowerPoint conversion backend is configured, PowerPoint presentations selected for conversion are uploaded to that service, processed temporarily, and returned as PDF or slide images. Do not upload sensitive presentations unless you trust the configured service.</p>
+            <p>Choose files only when you want to use a tool. Downloaded results are saved through your browser. We do not provide an account or cloud file storage in this version.</p>
+            <p>Like other websites, the hosting provider may process technical request information needed to serve the site. Avoid sharing sensitive files on any website unless you are comfortable with its security and your device's security.</p>
+            <p className="privacy-note">This notice describes the reviewed version of FileToolkit; it is not a guarantee about browser extensions, your device, or third-party infrastructure.</p>
+            <button type="button" className="privacy-done" onClick={() => setShowPrivacy(false)}>Got it</button>
+          </section>
+        </div>
+      )}
 
     </div>
 

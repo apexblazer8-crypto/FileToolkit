@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://file-toolkit-five.vercel.app/sitemap.xml
